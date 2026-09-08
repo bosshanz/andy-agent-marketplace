@@ -1,0 +1,25 @@
+{
+  "name": "my-coding-skills",
+  "version": "0.4.0",
+  "description": "Portable coding workflows: design, development, explicit QA and acceptance, and external-agent adapters.",
+  "author": {
+    "name": "bosshanz",
+    "url": "https://github.com/bosshanz"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "My Coding Skills",
+    "shortDescription": "Design, implement and review software with your own workflows.",
+    "longDescription": "Packages the original 11 skills without changing their content. QA and external-agent dispatch retain their explicit opt-in boundaries.",
+    "developerName": "bosshanz",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Use dev to implement this feature.",
+      "Use acceptance to review this completed change."
+    ]
+  },
+  "repository": "https://github.com/bosshanz/my-coding-skills",
+  "homepage": "https://github.com/bosshanz/my-coding-skills",
+  "license": "MIT"
+}

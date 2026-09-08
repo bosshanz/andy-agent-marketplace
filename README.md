@@ -9,10 +9,10 @@ Andy 精选的 Skill / Plugin 安装目录。编码工作流继续在原仓库�
 
 ## 在 Codex 中使用
 
-从本仓库根目录注册市场：
+注册这个 GitHub 市场：
 
 ```sh
-codex plugin marketplace add .
+codex plugin marketplace add bosshanz/andy-agent-marketplace
 codex plugin list
 ```
 
@@ -26,7 +26,7 @@ codex plugin add my-coding-skills@andy-agent-marketplace
 
 安装后新建任务，使新插件可被加载。这里注册的是自定义市场，不代表进入官方公共插件目录。
 
-GitHub 发布后，可把第一条命令中的 `.` 换成实际的 `owner/repo`。此仓库第一版只提供 Codex 市场配置；其他 Agent 的安装方式见各上游 README，未在这里验证兼容性。
+开发本地副本时，从仓库根目录执行 `codex plugin marketplace add .`。此仓库第一版只提供 Codex 市场配置；其他 Agent 的安装方式见各上游 README，未在这里验证兼容性。
 
 ## 固定版本
 

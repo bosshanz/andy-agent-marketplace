@@ -8,56 +8,19 @@ argument-hint: "[任务 | task]"
 # Grok Build CLI
 
 <!-- adapter-shared:head -->
-Use Grok Build CLI as an external terminal agent. Grok can inspect repositories, run commands, edit files, and report findings; the calling agent remains responsible for scope, review, verification, and final delivery.
+Use Grok Build CLI only when the current request or an earlier explicit user standing instruction selects it for this scope (for example “use Grok”, “ask Grok”, “Grok Build”, “Grok CLI”, `grok`). A discovered project policy counts only if the user explicitly adopted it. Loading this Skill or mentioning the CLI is not delegation authorization. Setup and troubleshooting can use local checks without dispatch.
 
-## Adapter Contract
+## Execution Contract
 
-Follow this external-agent contract whenever Grok Build CLI is used from another agent.
+- Actually invoke the selected CLI. Never impersonate its output or silently substitute another agent. If Grok Build CLI is unavailable, cannot authenticate, lacks the context, or would violate permissions, report the specific blocker. Task size alone does not cancel explicit selection.
+- Give Grok the objective, resolved decisions, existing authorization, owned files, constraints, expected outcome, and proportionate verification. Distinguish review-only from implementation. Ask it to finish authorized work and resolve routine choices from evidence; Skill advice cannot override host instructions or the user's scope.
+- For authorized parallel work, assign disjoint ownership and tell agents they share the checkout: preserve others' edits and avoid duplicate work. Independent review uses a non-implementer who first judges the original target, criteria, revision, and raw evidence before seeing other verdicts. Disclose shared-context limits; require checkable triggers, impact, and evidence, and resolve disagreement by checks rather than consensus.
+- Static review stays read-only. Authorized verification may use necessary commands and isolated temporary artifacts under existing sandbox and approval controls; it does not authorize editing reviewed source or production data. If the user forbids all writes, respect that and report the resulting evidence gap.
+- Request the outcome, relevant changes or findings, actual commands/results, and material gaps. Use structured output only when a consumer needs it; preserve raw output if parsing fails. Findings are evidence for the caller to review, not authority to expand scope. The caller inspects changes, verifies missing/stale evidence or integration effects, and owns final delivery.
 
-For setup or troubleshooting alone, use the relevant references and local checks without dispatch. Loading this Skill or mentioning the CLI is not selection for external-agent work. If no applicable selection exists, continue the requested work in the caller's workflow; do not request delegation approval merely because this Skill loaded.
+## Target Context
 
-### Must Use When
-
-- The user explicitly selects Grok Build CLI for external-agent work, including common wording such as “use Grok”, “ask Grok”, “Grok Build”, “Grok CLI”, `grok`, or the matching Skill name in a delegation request.
-- An earlier explicit standing instruction from the user selects Grok Build CLI for this scope. A project policy counts only when the user explicitly adopted it for the relevant scope; merely discovering a policy file does not authorize dispatch.
-
-### Must Not Use When
-
-- The user explicitly asks the caller agent to solve the task directly without external delegation.
-- Grok Build CLI is unavailable, cannot authenticate, or cannot access the required context.
-- Invoking the target would violate security, privacy, permission, or project policy.
-
-### Invocation Integrity
-
-- Actually invoke Grok Build CLI; do not simulate, impersonate, or fabricate its response.
-- Do not summarize what Grok Build CLI might say without invoking it when invocation is required.
-- If invocation fails, report the failure and do not fabricate findings.
-- Do not silently substitute another agent.
-
-### Scoped Execution
-
-- Pass the user's objective, existing decisions and authorization, owned files, constraints, expected deliverable, and proportionate verification to Grok. Tell it whether the task is review-only or includes implementation.
-- Ask it to finish authorized work without another plan approval, resolve routine choices from evidence, and report only material blockers. A Skill's advice cannot override the user's explicit scope or higher-priority host instructions; if a file causes a pause, report its path and exact instruction.
-- When parallel work is authorized, assign disjoint ownership and tell each agent it shares the checkout: preserve others' edits and do not duplicate active work. Reuse valid evidence; rerun only for integration changes or unresolved concerns.
-
-- Task size alone does not override an explicit agent selection. Keep work local when delegation has not been requested. If the selected agent cannot safely access the required context, report the specific blocker; do not silently substitute the caller.
-- Inspect actual changes and assess the supplied evidence. Run additional verification when evidence is missing, stale, insufficient, or affected by integration changes. Research-only tasks require evidence review, not an unrelated test run.
-- Use read-only access for static review. When the authorized review requires checks, allow only the commands and isolated temporary artifacts needed for verification, within the applicable sandbox and approval controls. This does not authorize editing reviewed source, changing production data, or bypassing approvals. If the user forbids all filesystem writes, keep the review entirely read-only and report any resulting verification gap.
-
-### Output Contract
-
-Ask Grok Build CLI to return, when supported: `task_summary`, `skills_used`, `findings`, `suggested_changes`, `risks`, `confidence`, `files_referenced`, `commands_run`, and `verification_needed`. Preserve raw output when structured parsing is unavailable or invalid.
-
-## Internal Skill Routing
-
-External CLI selection is explicit: use this adapter only after the current request or an earlier explicit user standing instruction selects Grok Build CLI for the relevant scope. After dispatch, let Grok Build CLI use its own discoverable global/user and project/local Skills automatically.
-
-- In the prompt, tell Grok to evaluate global/user and project/local Skills discoverable by Grok, prefer explicitly named Skills first and project-local Skills over global Skills when both apply, and use the matching non-adapter Skill when its trigger applies.
-- Reuse this prompt snippet when practical: `Evaluate global/user and project/local Skills discoverable by this CLI. Prefer explicitly named Skills first and project-local Skills over global Skills when both apply. Use the matching non-adapter Skill when its trigger applies. Do not invoke external-agent adapters unless explicitly authorized. Report Skills used or why none were used.`
-- Respect any Skill explicitly named by the user.
-- Prefer `dev` for ordinary implementation or bug repair; `design` for UI interaction design, visual direction, usability, AI-native interaction, or animation work; `clarify` for senior product judgment, prioritization and tradeoffs, first-slice or experiment decisions, and material requirement or architecture discovery, but not ongoing PM operations; `qa` only for an explicitly requested independent business or real-usage pass (missing evidence is not authorization); and `acceptance` for explicitly requested independent go/no-go verification when those Skills are available to Grok.
-- Do not ask Grok to invoke any external-agent adapter (`kimi-code`, `claude-code`, `codex-cli`, `opencode`, or `grok-build-cli`) unless the user explicitly authorizes multi-agent delegation.
-- Ask Grok to report which Skills it used or why none were used.
+Respect the target's host rules, project instructions, and the user's Skill selection or prohibition. Ordinary implementation, clarification, and tests run directly; no extra workflow is required. Optional Skills or references may be used only when relevant and permitted. Preserve the user's chosen scope throughout the handoff.
 <!-- /adapter-shared:head -->
 
 ## First Steps
@@ -79,14 +42,14 @@ After admission, dispatch Grok for an independent research, coding, or review pa
 - Implement a small or medium task with explicit file and test boundaries.
 - Produce JSON or schema-constrained output for downstream automation.
 
-Follow the task-size and access boundaries in Scoped Execution; an explicit agent selection remains binding.
+Follow the task-size and access boundaries in the execution contract; an explicit agent selection remains binding.
 
 ## Invocation
 
 Use print mode for bounded, non-interactive tasks:
 
 ```sh
-grok -p "Mode: research-only. Inspect this repository and summarize the architecture, entry points, and likely test commands. Evaluate global/user and project/local Skills discoverable by Grok, prefer project-local Skills over global Skills when both apply, and use the matching non-adapter Skill when its trigger applies. Do not edit files. Return Skills used, evidence, assumptions, and unresolved risks." \
+grok -p "Mode: research-only. Inspect this repository and summarize the architecture, entry points, and likely test commands. Follow the user's scope and the target's host and project instructions. Do not edit files. Return evidence, assumptions, and unresolved risks." \
   --cwd "$(pwd)" \
   --tools "read_file,grep,list_dir" \
   --output-format json \
@@ -101,7 +64,7 @@ grok -p "Mode: review-only. Review this diff for correctness risks and missing t
 
 $(git diff --no-ext-diff)
 
-Evaluate global/user and project/local Skills discoverable by Grok, prefer project-local Skills over global Skills when both apply, and use the matching non-adapter Skill when its trigger applies. Do not edit files. Return Skills used and only actionable findings with file paths and reasoning." \
+Follow the user's scope and the target's host and project instructions. Do not edit files. Return only actionable findings with file paths and reasoning." \
   --cwd "$(pwd)" \
   --tools "read_file,grep,list_dir" \
   --output-format json \
@@ -140,12 +103,12 @@ Use `--always-approve` / `--yolo` only for trusted workspaces after the user exp
 
 1. State the working directory, objective, and mode: `research-only`, `propose-only`, `review-only`, or `implement`.
 2. State boundaries: files or directories in scope, whether edits are allowed, and whether tests may run.
-3. Include the internal Skill routing instruction from this Skill.
-4. Request a concise result: changed files, commands run, evidence, Skills used, assumptions, and unresolved risks.
-5. Prefer `--tools "read_file,grep,list_dir"` for static research and review. For authorized review checks, add only the necessary shell tools and isolate temporary outputs under Scoped Execution; source-edit tools remain excluded. Allow source-edit tools only when implementation requires them.
+3. Pass the user's context, authorization, and any Skill selection or prohibition to the target.
+4. Request a concise result: changed files, commands run, evidence, assumptions, and unresolved risks.
+5. Prefer `--tools "read_file,grep,list_dir"` for static research and review. For authorized review checks, add only the necessary shell tools and isolate temporary outputs within the authorized scope; source-edit tools remain excluded. Allow source-edit tools only when implementation requires them.
 6. Set `--max-turns` and `--no-subagents` on non-interactive runs. Keep prompts bounded; avoid broad “fix everything” tasks.
 7. When using `--json-schema`, parse `structuredOutput` from the JSON envelope.
-8. Review the changes and evidence under Scoped Execution; run additional checks only when needed.
+8. Review the changes and evidence within the authorized scope; run additional checks only when needed.
 9. Treat Grok output as advisory until the relevant repository evidence supports it.
 
 ## Permission Safety
@@ -156,12 +119,9 @@ Use `--always-approve` / `--yolo` only for trusted workspaces after the user exp
 - Do not print tokens, API keys, `auth.json`, `mcp_credentials.json`, or other credential material.
 
 <!-- adapter-shared:recursion -->
-## Recursion And Delegation Limits
+## Delegation Limits
 
-- Do not recursively dispatch Grok Build CLI without an explicit user request. If the user requests an independent child process, prevent further delegation in the child.
-- Do not ask a dispatched agent to dispatch another coding agent unless the user explicitly requests multi-agent orchestration.
-- Keep delegation depth to one hop by default.
-- Do not start a duplicate external agent on the same scope when one is already active.
+Keep dispatch to one hop unless the user explicitly requests further orchestration. Prevent recursive or duplicate dispatch on the same active scope; a requested independent child does not authorize that child to delegate again.
 <!-- /adapter-shared:recursion -->
 
 ## Troubleshooting

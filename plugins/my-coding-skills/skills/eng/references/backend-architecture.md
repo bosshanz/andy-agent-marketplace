@@ -4,14 +4,14 @@
 
 Use when the task changes component/service boundaries, cache or queue topology, cross-component consistency, reliability targets, observability strategy, or rollout behavior. An ordinary handler repair or isolated query change does not require this reference.
 
-This file owns component decisions and operational strategy. `backend-quality.md` owns implementation within existing boundaries; `database-engineering.md` owns schemas, query plans, transactions, migrations, and live data operations. Load either only when that responsibility also changes. `stack.md` owns technology preferences when selecting a new technology.
+This file owns component decisions and operational strategy. `backend-quality.md` owns implementation within existing boundaries; `database-engineering.md` owns schemas, query plans, transactions, migrations, and live data operations. Load either only when that responsibility also changes. Prefer the existing stack; select new technology from access patterns, consistency, failure recovery, and operational constraints.
 
 ## Component Decisions
 
-- Identify the changed responsibility, its callers, contract, and failure behavior. Compare alternatives only under `dev`'s shared decision rules; reuse settled project choices.
+- Identify the changed responsibility, its callers, contract, and failure behavior. Compare alternatives only when they can change the decision; reuse settled project choices.
 - Start with the fewest components that meet the requirement. Prefer a modular monolith until operational readiness, team boundaries, or measured bottlenecks justify extraction.
 - Define synchronous versus asynchronous boundaries from caller dependency, latency budget, consistency, and recovery needs.
-- A new seam should hide meaningful complexity or have real variation, a concrete testing need, or an operational purpose. Use `design-and-research.md` only when deeper module comparison is needed.
+- A new seam should hide meaningful complexity or have real variation, a concrete testing need, or an operational purpose. Use `architecture-decisions.md` only when deeper module comparison is needed.
 - Keep contracts compatible through rollout. Coordinate changes to public APIs and events with their consumers; implementation-level validation and error mapping belong in `backend-quality.md`.
 
 ## Cache Strategy
@@ -24,7 +24,7 @@ This file owns component decisions and operational strategy. `backend-quality.md
 
 ## Queue And Cross-Component Consistency
 
-- Use the project's existing queue when it meets the requirement; consult `stack.md` only for a technology choice.
+- Use the project's existing queue when it meets the requirement; choose an alternative only for a concrete capability or operational need.
 - Define producer/consumer ownership, message contract and version, delivery and ordering guarantees, retry budget, and dead-letter or equivalent terminal-failure handling.
 - When a database write and event publication cannot diverge, use an outbox or an equivalent transactional publishing mechanism. Account for duplicate delivery and recovery across the boundary; implementation of duplicate-safe writes belongs to the affected quality/database guidance.
 - Monitor producer rate, consumer throughput, oldest backlog age, retries, and terminal failures when those determine operational health.
@@ -46,7 +46,7 @@ For the affected important components, identify failure blast radius, detection,
 
 ## Verification
 
-Select checks for the changed cross-component behavior under `dev`'s shared evidence rules:
+Select checks for the changed cross-component behavior at the lowest layer that includes the enforcing mechanism:
 
 - Cache invalidation, expiry, stale-read tolerance, and recovery from cache loss.
 - Event publication/delivery failures, duplicate handling, backlog recovery, and terminal failure paths.
@@ -58,7 +58,7 @@ Handler tests and database checks remain with their owning references. Reuse the
 
 ## Decision Artifacts
 
-For a requested or project-required architecture decision document, select relevant material: context, unresolved alternatives, chosen boundary, contract, failure/recovery behavior, rollout, and supporting evidence. Include capacity calculations or a diagram only when `dev`'s shared triggers apply. This is not a required final-response template.
+For a requested or project-required architecture decision document, select relevant material: context, unresolved alternatives, chosen boundary, contract, failure/recovery behavior, rollout, and supporting evidence. Include capacity calculations or a diagram only when it clarifies the decision. This is not a required final-response template.
 
 ## Source Inspirations
 

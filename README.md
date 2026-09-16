@@ -4,7 +4,7 @@ Andy 精选的 Skill / Plugin 安装目录。编码工作流继续在原仓库�
 
 | 插件 | 用途 | 收录说明 |
 | --- | --- | --- |
-| My Coding Skills | 设计、业务验证、工程参考、外部 Agent 适配器 | [详情](catalog/my-coding-skills.md) |
+| My Coding Skills | 设计、业务验证、工程原则、决策追问、仓库学习与外部 CLI | [详情](catalog/my-coding-skills.md) |
 | Diagram Design | 架构图、流程图等 HTML / SVG 图表 | [详情](catalog/diagram-design.md) |
 
 ## 在 Codex 中使用
@@ -30,7 +30,7 @@ codex plugin add my-coding-skills@andy-agent-marketplace
 
 ## 固定版本
 
-- My Coding Skills：`0.6.0`，`c143e517df6caf820caac10edbffe7cdf35d8c56`，原样打包 9 个 Skill 及其资源。
+- My Coding Skills：`0.7.0`，`d2ef4658194fa4c5991570a3831de4ef4a26c7d7`，原样打包 6 个 Skill 及其资源。
 - Diagram Design：`2724fd2efd8c6737f6fa704fbf5da52d67375497`，直接引用上游插件，安装时需要网络。
 
 完整版本和打包文件摘要见 [sources.lock.json](sources.lock.json)。结构验证不等于实际任务效果验证；当前还没有对两个插件执行模型行为测试。

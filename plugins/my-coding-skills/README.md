@@ -1,6 +1,6 @@
 # Coding Agent Skills
 
-按需使用的设计、业务验证、决策追问、仓库内经验积累和外部 CLI 调用合同，以及覆盖所有开发任务的工程行为准则。
+按需使用的设计、业务验证、决策追问和仓库内经验积累，以及覆盖所有开发任务的工程行为准则。
 
 开发、修复、重构、开发测试和代码审查以 `eng` 为统一工程入口，由当前 Agent 完成；纯需求分析按问题直接处理。本库不再提供默认的开发调度器，也不把澄清、QA 和验收串成固定阶段。是否使用 Skill 取决于它能否补充当前任务需要的信息；用户要求不使用时，直接遵从。
 
@@ -8,22 +8,21 @@
 
 ## 可选能力
 
-当前有 6 个 Skill，全部按需选择：
+当前有 5 个 Skill，全部按需选择：
 
 | Skill | 用途 |
 | --- | --- |
-| `design` | 需要具体设计决策时查阅交互、视觉和动效资料；已定设计的普通实现无需再走设计流程。 |
+| `design` | 从任务与证据定位设计问题，形成交互模式、视觉层级、设计语言和动效选择；已定设计的普通实现无需再走设计流程。 |
 | `verify` | 用户明确要求的业务规则检查、用户旅程诊断或最终验收。请求保护规则时可以补测试；仅评审时保持只读。 |
 | `eng` | 所有开发任务的统一工程入口：约束工程行为与品味，遵循如无必要勿增实体、可维护表达、清晰契约、真实失败、状态归属、兼容性和证据原则；不规定固定流程。 |
 | `grill-me` | 用户要求深度追问或挑战方案时，先查事实，一次追问一个关键问题，收敛决策与待验证项。 |
 | `reflect` | 日常从纠正、失败和有证据的改进中自动复盘，经验默认跟随仓库；全局记忆需用户明确要求。 |
-| `external-cli` | 用户点名 Claude Code、Codex CLI、Kimi Code、OpenCode 或 Grok Build 时，按合同调用对应无头 CLI；ACP 只用于有客户端的会话或编辑器嵌入。 |
 
-`verify` 合并了原 `qa` 和 `acceptance` 的用途。它区分检查行为、按请求增加测试保护和给出最终结论；技术验收不授权发布。真正的独立审查需要实际的审查者分离和相应授权。
+`verify` 合并了原 `qa` 和 `acceptance` 的用途。它区分检查行为、按请求增加测试保护和给出最终结论；只读检查不修改被审查源码或测试，但可在已有授权内运行检查、操作隔离测试数据并清理临时产物。技术验收不授权发布。真正的独立审查需要实际的审查者分离和相应授权。`verify` 与 `grill-me` 的 Codex 元数据均关闭隐式调用，避免未请求时自动接入。
 
-`reflect` 遵从宿主的记忆与文件写入规则。优先复用仓库已有经验日志，否则在首次有可记录经验时使用仓库根目录 `.agent-learning.md`；宿主禁止自动持久化时只在对话中复盘。区分确认偏好、已获证据的经验与待验证假设，不自动改写项目规则。Codex 元数据允许隐式调用；其他宿主按入口描述触发。`$reflect` / `/reflect` 仍可主动复盘或维护经验。
+`reflect` 遵从宿主的记忆与文件写入规则。优先复用仓库已有经验日志；没有已知落点时，首次有可记录经验会在汇报末尾询问一次放在哪里（如根目录 `.agent-learning.md`、自定路径或仅对话），未回答则不写入；宿主禁止自动持久化时只在对话中复盘。区分确认偏好、已获证据的经验与待验证假设，不自动改写项目规则。Codex 元数据允许隐式调用；其他宿主按入口描述触发。`$reflect` / `/reflect` 仍可主动复盘或维护经验。
 
-## 怎样使用这六个能力
+## 怎样使用这五个能力
 
 从任务需要补充的信息选择入口，不必按顺序调用：
 
@@ -36,11 +35,19 @@
 | 复盘并积累经验 | `$reflect 复盘这次修复，将有证据的经验留在仓库。` | 区分事实、经验和假设，复用仓库日志并遵从宿主写入规则。 |
 | 记录明确偏好 | `$reflect 将本项目的包管理器偏好从 pnpm 改为 npm，更新项目 AGENTS.md 的偏好段。` | 在宿主允许的机制内更新同作用域旧条目，不重复记录、不扩展成全局偏好。 |
 
-设计参考提供营销概念、管理工具和原生桌面三类[选择示例](design/references/design-direction.md#calibration-examples)。工程例证覆盖[幂等与租户隔离](eng/references/software-quality.md#worked-examples-idempotency-and-tenant-scope)、[兼容迁移](eng/references/database-engineering.md#worked-example-renaming-a-populated-column)和[发布状态归属](eng/references/architecture-decisions.md#worked-example-one-owner-for-publish-state)。数据库专属语法标注适用引擎，不作为跨数据库通则。
+设计参考覆盖诊断与取舍、视觉基本功、交互模式、动效、设计语言和结果判断，适用于产品工具、展示网站及原生界面。除三类产品的[选择示例](design/references/design-direction.md#calibration-examples)，还提供六组成对案例：[浏览与比较、表单依赖、动作可逆性](design/references/interaction.md#paired-examples)、[既有品牌约束](design/references/design-direction.md#paired-examples)、[操作频率与减少动态效果](design/references/animation.md#paired-examples)。每组固定背景，只改变关键约束，说明具体方案、理由、代价、重新判断条件和验证方法。渲染检查外观，实际操作检查流程，正常速度播放及中断操作检查动画。
 
-`verify` 的[场景参考](verify/references/scenarios.md)覆盖支付响应丢失、草稿恢复、账号权限切换和批量部分完成，说明证据足以证明什么。它复用宿主已有工具，不要求额外浏览器或测试框架。`reflect` 支持同范围替换、局部例外和明确撤销；记录始终受宿主规则约束；不会默认写入全局。
+工程例证覆盖[幂等与租户隔离](eng/references/software-quality.md#worked-examples-idempotency-and-tenant-scope)、[兼容迁移](eng/references/database-engineering.md#worked-example-renaming-a-populated-column)和[发布状态归属](eng/references/architecture-decisions.md#worked-example-one-owner-for-publish-state)。数据库专属语法标注适用引擎，不作为跨数据库通则。
+
+`verify` 的[场景参考](verify/references/scenarios.md)覆盖支付响应丢失、草稿恢复、账号权限切换、批量部分完成，以及文档冲突或缺失、请求乱序、隔离复现和证据充分性。它沿产品预期、技术机制和实际证据推导检查，区分不符合要求、必需证据缺失和非阻塞风险，复用已有工具而不要求新测试框架。`reflect` 支持同范围替换、局部例外和明确撤销；记录始终受宿主规则约束；不会默认写入全局。
 
 这些例子是指导资料，不是已执行的测试报告。上游来源用于说明借鉴的方法，不代表已经证明本库的模型增益。具体证据层级见[工作流程与评估](docs/workflow.md)，规则与偏好的落点见[职责说明](docs/three-layers.md)。
+
+## 项目设计与架构文档
+
+`design` 在实质性的产品行为设计中按需建立、维护产品设计文档，说明用户任务、业务规则、流程状态、交互视觉与动效，以及可观察的验收条件。`eng` 在实质架构变化中维护架构文档，说明背景约束、模块、技术栈、DB 与中间件、数据与状态归属、关键机制和取舍；当开发改动影响业务规则或用户可见行为且未走设计流程时，`eng` 也同步已有产品文档中受影响的条目。产品文档区分确认决定、建议与假设；架构文档区分当前实现与计划方案。
+
+先查项目导航和已有材料；没有合适落点时分别使用 `docs/product.md`、`docs/architecture.md`。只创建当前任务需要的文档，只更新受影响内容，小修复不要求新建。项目 `AGENTS.md` 在项目规则与授权允许时登记实际路径、用途和同步要求；全局模板仅提供查找和维护原则，不写死路径。`verify` 使用这些材料与实际证据检查结果，资料缺失不阻止仍可成立的检查。文档维护不自动串联 Skill，也不增加审批。详见[文档职责与项目规则](docs/three-layers.md)。
 
 ## 工程原则与参考
 
@@ -56,8 +63,6 @@
 ./install.sh design --target agents
 ./install.sh verify --target agents
 ./install.sh grill-me --target agents
-./install.sh external-cli --target agents
-./install.sh claude-code --target agents
 ```
 
 npm CLI 使用相同目录和分组：
@@ -76,10 +81,9 @@ npx --package my-coding-skills skills references
 | `quality` | `verify` |
 | `engineering` | `eng` |
 | `meta` | `reflect` |
-| `adapters` / `delegation` | `external-cli` |
-| `all` | 全部 6 个 Skill，显式选择才安装 |
+| `all` | 全部 5 个 Skill，显式选择才安装 |
 
-目标支持 `agents`（默认的 `~/.agents/skills`）、`codex`（`${CODEX_HOME:-$HOME/.codex}/skills`）、`claude`、`gemini`、`opencode` 和 `all`。`all` 写入 agents、claude、gemini、opencode 四处。`--dest DIR` 指定一个自定义目录，不能与显式 `--target all` 同用；`--force` 替换已存在的同名 Skill。
+`grill-me` 不设单成员分组别名，按名称直接安装或通过 `all` 安装。目标支持 `agents`（默认的 `~/.agents/skills`）、`codex`（`${CODEX_HOME:-$HOME/.codex}/skills`）、`claude`、`gemini`、`opencode` 和 `all`。`all` 写入 agents、claude、gemini、opencode 四处。`--dest DIR` 指定一个自定义目录，不能与显式 `--target all` 同用；`--force` 替换已存在的同名 Skill。
 
 通用规则模板保留为独立选项，不随 Skill 安装：
 
@@ -90,21 +94,24 @@ npx --package my-coding-skills skills references
 
 此选项需要 Node.js 18+，只替换模板托管区块，保留其他内容；修改前备份，内容相同则不重复写入，存在非空 `AGENTS.override.md` 时拒绝，以免结果被遮蔽。`--dest` 在此模式下指定规则目录。只采用适合自己的约定，项目命令和特定约束仍放在项目已有说明中。
 
+### Codex 子智能体（可选）
+
+`codex/subagents/` 提供一个 Codex 自定义子智能体角色和一段全局编排规则，与上面的 Skill 分开安装：`node codex/subagents/install.mjs --dry-run` 预览，去掉 `--dry-run` 安装。详见 [codex/subagents/README.md](codex/subagents/README.md)。
+
 ## 从旧目录迁移
 
-`dev`、`clarify`、`qa`、`acceptance` 及安装分组 `workflow`、`planning` 已退役。`kimi-code`、`claude-code`、`codex-cli`、`opencode`、`grok-build-cli` 现为 `external-cli` 的安装别名，安装器写入 `external-cli`，不静默删除旧目录。已有安装需要显式清理，否则旧入口仍可能被宿主发现。
+`dev`、`clarify`、`qa`、`acceptance` 及安装分组 `workflow`、`planning` 已退役。`external-cli` 及其旧别名 `kimi-code`、`claude-code`、`codex-cli`、`opencode`、`grok-build-cli` 和分组 `adapters`、`delegation` 已移除，安装器会拒绝这些名称，也不静默删除旧目录。已有安装需要显式清理，否则旧入口仍可能被宿主发现。
 
 在原先的安装目标预览并清理本库的旧目录，再按需安装新能力：
 
 ```bash
 ./uninstall.sh dev clarify qa acceptance --target agents --dry-run
 ./uninstall.sh dev clarify qa acceptance --target agents
-./uninstall.sh kimi-code claude-code codex-cli opencode grok-build-cli --target agents
+./uninstall.sh adapters --target agents
 ./install.sh verify --target agents
-./install.sh external-cli --target agents
 ```
 
-若原来安装到 `codex`、`claude` 等目标，应指定对应目标；有本地修改时先保留。卸载器仍接受旧名称、`workflow`、`planning`，便于移除历史安装。卸载 `quality` 会包含 `verify` 及旧 `qa`、`acceptance`；卸载 `adapters` 会包含 `external-cli` 及旧适配器目录；卸载 `all` 会包含当前和退役目录。无参数卸载也只显示帮助。
+若原来安装到 `codex`、`claude` 等目标，应指定对应目标；有本地修改时先保留。卸载器仍接受旧名称、`workflow`、`planning`，便于移除历史安装。卸载 `quality` 会包含 `verify` 及旧 `qa`、`acceptance`；卸载 `adapters` 会移除已删除的 `external-cli` 及旧适配器目录；卸载 `all` 会包含当前和退役目录。无参数卸载也只显示帮助。
 
 原 `dev` 的参考资料现由可选的 `eng` 加载；原 `superpowers-lite.md` 改名 `debugging.md`，`design-and-research.md` 的模块与架构内容保留在 `architecture-decisions.md`。重复的开发流程、资料路由和通用文档写作入口已移除，旧内容可从 Git 历史恢复。
 
@@ -112,8 +119,6 @@ npx --package my-coding-skills skills references
 
 - 功能、修复、重构、调试、开发测试和代码审查使用 `eng` 的共同准则，由当前 Agent 直接完成；用户禁用 Skill 时遵从。
 - 需要设计决策时按需使用 `design`；业务规则检查、真实用法诊断或最终验收明确请求 `verify`；工程原则和按需参考由 `eng` 提供；挑战方案可请求 `grill-me`；纠正、失败和有证据的改进可触发 `reflect` 的仓库内学习。
-- 外部 CLI 只有在当前请求或适用的用户持续指令已选定时才调用。发现项目策略文件本身不构成授权。
-- 调用方必须实际调用指定 CLI，准确报告不可用情况，保留真实结果并复核证据。把用户选择或禁止使用 Skill 的要求传给目标，不强制目标加载本库流程。
 - Skill 不授权增加任务、发布、生产操作或递归委派。结束一个检查不结束其他已授权工作。
 
 ## 验证与限制
@@ -125,7 +130,7 @@ npm run check:cli
 git diff --check
 ```
 
-`npm test` 检查目录与引用、fixture 加载、校验器回归、安装和卸载安全。`doctor` 检查资源完整性；外部 CLI 不存在只产生提示。
+`npm test` 检查目录与引用、fixture 加载、校验器回归、安装和卸载安全。`doctor` 检查资源完整性。
 
 路由代理、文本回答、宿主自报和真实执行是不同证据，详见 [工作流程与评估](docs/workflow.md)。当前真实执行夹具不再强制注入 `dev`；历史报告仍代表原版本。静态检查通过不证明删减后质量相当或更好，也不证明真实宿主的触发行为。需要证明增益时，使用相同模型、任务和环境的有无对照，单独记录结果；外部模型调用仍需相应授权。
 
@@ -138,7 +143,6 @@ design/
     openai.yaml
   references/
     animation.md
-    anthropic-frontend-design-LICENSE.txt
     design-direction.md
     interaction.md
 verify/
@@ -166,22 +170,6 @@ reflect/
   SKILL.md
   agents/
     openai.yaml
-external-cli/
-  SKILL.md
-  agents/
-    openai.yaml
-  references/
-    claude-code.md
-    codex-cli.md
-    grok-build.md
-    kimi-code.md
-    opencode.md
-  scripts/
-    claude-code-status.sh
-    codex-cli-status.sh
-    grok-build-cli-status.sh
-    kimi-code-status.sh
-    opencode-status.sh
 templates/
   AGENTS.md
 install.sh
@@ -199,7 +187,7 @@ docs/
 
 仓库所有者要求“发布 My Coding Skills”时，默认包含两个仓库的发布：源仓库测试、提交和推送，以及市场同步、验证、提交和推送；明确要求只处理源仓库时遵从该范围。普通修改或仅提交/推送源仓库，不隐含发布到市场。
 
-1. 在本仓库修改 Skill，正式发布时更新 `package.json` 和相应 lockfile 的版本。运行 `npm test`、`npm run doctor` 和 `git diff --check`；catalog/CLI 变更还需 `npm run check:cli`。检查差异后提交并推送，记录 `git rev-parse HEAD` 返回的完整 SHA。
+1. 在本仓库修改 Skill，正式发布时更新 `package.json` 和相应 lockfile 的版本。运行 `npm test`、`npm run doctor` 和 `git diff --check`；catalog 或安装 CLI（`bin/skills.mjs`）变更还需 `npm run check:cli`。检查差异后提交并推送，记录 `git rev-parse HEAD` 返回的完整 SHA。
 2. 找到 remote 为 `https://github.com/bosshanz/andy-agent-marketplace.git`（或对应 SSH URL）的市场工作副本；没有时克隆该仓库。检查两个仓库的工作区并保留无关修改。进入市场根目录，用已发布的完整 SHA 同步：
 
    ```sh
@@ -216,4 +204,4 @@ docs/
 
 ## 许可证
 
-本仓库自有内容使用 [MIT License](LICENSE)。`design/references/design-direction.md` 改编自固定版本的第三方 Apache-2.0 内容，完整许可证位于 [对应许可证文件](design/references/anthropic-frontend-design-LICENSE.txt)；动效资料保留 [Emil Kowalski](https://github.com/emilkowalski/skills) 的 MIT 来源说明。
+本仓库自有内容使用 [MIT License](LICENSE)。参考资料如有来源说明，见对应文件。

@@ -1,7 +1,7 @@
 {
   "name": "my-coding-skills",
-  "version": "0.7.0",
-  "description": "Optional design, business verification, engineering references, preference recording, and external-agent adapters.",
+  "version": "0.8.0",
+  "description": "Optional software engineering principles, UI design, business verification, decision interviews, and repository-local learning for coding agents.",
   "author": {
     "name": "bosshanz",
     "url": "https://github.com/bosshanz"
@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "My Coding Skills",
     "shortDescription": "Design, implement and review software with your own workflows.",
-    "longDescription": "Packages nine optional skills. Ordinary implementation runs in the current agent. Design, verify, eng, reflect, and external-agent dispatch retain their explicit opt-in boundaries.",
+    "longDescription": "Packages five optional skills (design, verify, eng, grill-me, reflect). Development runs in the current agent with eng principles; verify and grill-me remain explicit opt-ins, and reflect keeps lessons repository-local.",
     "developerName": "bosshanz",
     "category": "Productivity",
     "capabilities": [],

@@ -1,6 +1,6 @@
 # Coding Agent Skills
 
-Optional design, business verification, decision interviews and repository-local learning, and a unified external CLI adapter, plus engineering principles for all development work.
+Optional design, business verification, decision interviews, and repository-local learning, plus engineering principles for all development work.
 
 Implementation, fixes, refactoring, debugging, developer tests, and code review use `eng` as their common engineering entry and run in the current agent. Pure product analysis proceeds directly. There is no default development dispatcher or mandatory clarification / QA / acceptance pipeline. Honor the user's choice not to use Skills.
 
@@ -10,16 +10,15 @@ Implementation, fixes, refactoring, debugging, developer tests, and code review 
 
 | Skill | Purpose |
 | --- | --- |
-| `design` | Concrete interaction, visual, and motion decisions. Implementing an established design needs no new design process. |
+| `design` | Diagnose design problems from tasks and evidence; choose interaction patterns, visual hierarchy, a consistent design language, and motion. Implementing an established design needs no new design process. |
 | `verify` | Explicitly requested business-rule checks, journey diagnosis, or final acceptance. Add protection only when requested; review alone stays read-only. |
 | `eng` | A common entry for all development work, governing engineering behavior and taste: avoid unnecessary entities, write maintainable code, make contracts clear, expose failures truthfully, own state explicitly, preserve compatibility, and use evidence. No fixed workflow. |
 | `grill-me` | Requested plan challenges and decision interviews: inspect evidence, ask one consequential question at a time, and converge. |
 | `reflect` | Learn automatically from corrections, failures, and supported improvements. Lessons stay in the repository; global memory requires an explicit request. |
-| `external-cli` | After the user names Claude Code, Codex CLI, Kimi Code, OpenCode, or Grok Build, invoke that CLI's headless command. ACP is only for a client-driven session or editor embedding. |
 
-`verify` combines the former `qa` and `acceptance` purposes while preserving read-only review, requested test protection, and final-verdict boundaries. Technical acceptance is not publication authority. Independent review requires actual reviewer separation and applicable authorization.
+`verify` combines the former `qa` and `acceptance` purposes while preserving read-only review, requested test protection, and final-verdict boundaries. Read-only review does not edit the reviewed source or tests; within existing authorization it may run checks, operate on isolated test data, and clean up temporary artifacts. Technical acceptance is not publication authority. Independent review requires actual reviewer separation and applicable authorization. Codex metadata disables implicit invocation for `verify` and `grill-me`.
 
-`reflect` follows host persistence rules. Reuse the repository's designated learning log, otherwise use `.agent-learning.md` at its root when the first useful entry is permitted. If the host forbids automatic persistence, reflect in the conversation only. Distinguish confirmed preferences, evidence-backed lessons, and hypotheses; do not automatically rewrite project instructions. Codex metadata permits implicit invocation; other hosts use the entry description. `$reflect` / `/reflect` remain available for focused retrospectives and maintenance.
+`reflect` follows host persistence rules. Reuse the repository's designated learning log. When no location is known, the first useful entry ends the report with one question about where to keep it (for example root `.agent-learning.md`, a custom path, or conversation only); nothing is written without an answer. If the host forbids automatic persistence, reflect in the conversation only. Distinguish confirmed preferences, evidence-backed lessons, and hypotheses; do not automatically rewrite project instructions. Codex metadata permits implicit invocation; other hosts use the entry description. `$reflect` / `/reflect` remain available for focused retrospectives and maintenance.
 
 ## Choosing A Capability
 
@@ -34,11 +33,19 @@ Select the information the task needs; these are not sequential stages.
 | Learn from an outcome | `$reflect Review this fix and keep supported lessons in the repository.` | Distinguish observations, lessons, and hypotheses; reuse repository records under host rules. |
 | Record an explicit preference | `$reflect Replace this project's pnpm preference with npm in its AGENTS.md preference section.` | Use the host-permitted mechanism, replace the same-scope entry, and avoid turning project scope into a global preference. |
 
-Design includes [calibration examples](design/references/design-direction.md#calibration-examples) for marketing, admin tools, and native desktop workflows. Engineering examples cover [idempotency and tenant isolation](eng/references/software-quality.md#worked-examples-idempotency-and-tenant-scope), [compatible migrations](eng/references/database-engineering.md#worked-example-renaming-a-populated-column), and [publish-state ownership](eng/references/architecture-decisions.md#worked-example-one-owner-for-publish-state). Database-specific syntax names its engine rather than posing as a universal rule.
+Design covers diagnosis and tradeoffs, visual fundamentals, interaction patterns, motion, design language, and evaluation for product tools, presentation websites, and native interfaces. Alongside [calibration examples](design/references/design-direction.md#calibration-examples), six paired cases cover [browsing versus comparison, form dependencies, and action reversibility](design/references/interaction.md#paired-examples), [existing brand constraints](design/references/design-direction.md#paired-examples), and [interaction frequency and reduced motion](design/references/animation.md#paired-examples). Each pair holds the background constant and changes one decisive constraint, with concrete choices, reasons, costs, reconsideration conditions, and verification methods. Inspect rendered output for appearance, actual interaction for flows, and normal-speed playback plus interruption for motion.
 
-The [verification scenarios](verify/references/scenarios.md) cover lost payment responses, restored drafts, account/permission switches, and partial batches. They explain which evidence supports a claim and reuse host tools without requiring a new browser or test framework. `reflect` handles same-scope replacements, narrow exceptions, and explicit retractions; writes follow host rules and never default to global memory.
+Engineering examples cover [idempotency and tenant isolation](eng/references/software-quality.md#worked-examples-idempotency-and-tenant-scope), [compatible migrations](eng/references/database-engineering.md#worked-example-renaming-a-populated-column), and [publish-state ownership](eng/references/architecture-decisions.md#worked-example-one-owner-for-publish-state). Database-specific syntax names its engine rather than posing as a universal rule.
+
+The [verification scenarios](verify/references/scenarios.md) cover lost payment responses, restored drafts, account/permission switches, partial batches, conflicting or missing documentation, out-of-order responses, isolated reproduction, and sufficient evidence. Checks connect product expectations, technical mechanisms, and actual evidence, distinguishing unmet requirements, missing required evidence, and non-blocking risks. They reuse existing tools without requiring a new test framework. `reflect` handles same-scope replacements, narrow exceptions, and explicit retractions; writes follow host rules and never default to global memory.
 
 These are guidance examples, not executed test reports. Upstream attribution explains the method's origin, not measured gains from this library. See [workflow and evaluation](docs/workflow.md) for evidence levels and [rules, capabilities, and preferences](docs/three-layers.md) for where information belongs.
+
+## Product And Architecture Documents
+
+During substantive product design work, `design` creates or maintains the minimum useful product document: user tasks, business rules, flow states, interaction, visuals, motion, and observable acceptance criteria. During substantive architecture changes, `eng` maintains background constraints, module responsibilities, the technology stack, databases and middleware, data and state ownership, key mechanisms, and tradeoffs; when development work changes business rules or user-visible behavior without a design pass, `eng` also syncs affected entries in an existing product document. Product documents distinguish confirmed decisions, proposals, and hypotheses; architecture documents distinguish the current implementation from planned changes.
+
+Check project navigation and reuse existing material first. If no suitable location exists, default to `docs/product.md` and `docs/architecture.md`, creating only the document needed for the task and updating only affected content. Small fixes do not require new documents. When project rules and authorization permit, the project's `AGENTS.md` records actual paths, purposes, and maintenance expectations; the global template gives discovery and maintenance principles without fixed paths. `verify` uses these materials alongside actual evidence; missing documents do not prevent checks that remain valid. Documentation does not automatically chain Skills or add approvals. See [document ownership and project rules](docs/three-layers.md).
 
 ## Engineering References
 
@@ -54,8 +61,6 @@ No arguments display help without installing or uninstalling anything. Select a 
 ./install.sh design --target agents
 ./install.sh verify --target agents
 ./install.sh grill-me --target agents
-./install.sh external-cli --target agents
-./install.sh claude-code --target agents
 ```
 
 ```bash
@@ -72,10 +77,9 @@ These interfaces describe the current source. Until a release includes this chan
 | `quality` | `verify` |
 | `engineering` | `eng` |
 | `meta` | `reflect` |
-| `adapters` / `delegation` | `external-cli` |
 | `all` | All five Skills, only when explicitly selected |
 
-Targets: `agents` (default, `~/.agents/skills`), `codex` (`${CODEX_HOME:-$HOME/.codex}/skills`), `claude`, `gemini`, `opencode`, and `all`. The `all` target writes to agents, claude, gemini, and opencode. `--dest DIR` selects one custom directory and cannot be combined with an explicit `--target all`. `--force` replaces an existing same-name Skill.
+`grill-me` has no single-skill group alias; install it directly by name or via `all`. Targets: `agents` (default, `~/.agents/skills`), `codex` (`${CODEX_HOME:-$HOME/.codex}/skills`), `claude`, `gemini`, `opencode`, and `all`. The `all` target writes to agents, claude, gemini, and opencode. `--dest DIR` selects one custom directory and cannot be combined with an explicit `--target all`. `--force` replaces an existing same-name Skill.
 
 The global rules template remains a separate opt-in:
 
@@ -88,27 +92,24 @@ This requires Node.js 18+, preserves non-managed content, backs up changes, skip
 
 ## Migration
 
-`dev`, `clarify`, `qa`, `acceptance`, and installation groups `workflow` / `planning` are retired. `kimi-code`, `claude-code`, `codex-cli`, `opencode`, and `grok-build-cli` are install aliases of `external-cli`; the installer writes `external-cli` and does not silently delete leftover directories. Old installed entries remain discoverable until explicitly removed.
+`dev`, `clarify`, `qa`, `acceptance`, and installation groups `workflow` / `planning` are retired. `external-cli`, its former aliases `kimi-code`, `claude-code`, `codex-cli`, `opencode`, `grok-build-cli`, and the `adapters` / `delegation` groups are removed; the installer rejects these names and does not silently delete leftover directories. Old installed entries remain discoverable until explicitly removed.
 
 Preview removal at the original installation target, preserve any local modifications, then select the replacement capability:
 
 ```bash
 ./uninstall.sh dev clarify qa acceptance --target agents --dry-run
 ./uninstall.sh dev clarify qa acceptance --target agents
-./uninstall.sh kimi-code claude-code codex-cli opencode grok-build-cli --target agents
+./uninstall.sh adapters --target agents
 ./install.sh verify --target agents
-./install.sh external-cli --target agents
 ```
 
-Use the original `codex`, `claude`, or other target if applicable. Uninstall still accepts legacy names and groups. Uninstalling `quality` includes `verify`, `qa`, and `acceptance`; uninstalling `adapters` includes `external-cli` and leftover adapter directories; uninstalling `all` includes current and retired entries. No-argument uninstall only displays help.
+Use the original `codex`, `claude`, or other target if applicable. Uninstall still accepts legacy names and groups. Uninstalling `quality` includes `verify`, `qa`, and `acceptance`; uninstalling `adapters` removes the deleted `external-cli` and leftover adapter directories; uninstalling `all` includes current and retired entries. No-argument uninstall only displays help.
 
 Useful `dev` references now load through optional `eng`. `superpowers-lite.md` became `debugging.md`; module and architecture material from `design-and-research.md` remains in `architecture-decisions.md`. Repeated workflow, reference-routing, and generic documentation guidance were removed. Git history retains the original files.
 
 ## Scope And Evidence
 
 - Development work and code review use `eng` principles and proceed directly in the current agent; honor requests to use no Skills. Design decisions may use `design`; business checks or final acceptance explicitly request `verify`; engineering principles and on-demand references come from `eng`; requested plan challenges use `grill-me`; corrections, failures, and supported improvements can trigger repository-local learning with `reflect`.
-- External adapters require selection by the current request or an applicable explicit standing instruction. Discovering a policy file is not authorization.
-- Actually invoke the chosen CLI, report unavailability accurately, preserve real output, and review its evidence. Pass through the user's Skill selection or prohibition; do not require a development Skill in the child.
 - Skills do not grant publication, production access, unrelated work, or recursive delegation. Finish other authorized work after a check.
 
 ```bash
@@ -118,7 +119,7 @@ npm run check:cli
 git diff --check
 ```
 
-Static tests cover catalog and reference integrity, fixture loading, evaluator regression, and installer safety. `doctor` checks resources; missing optional CLIs produce warnings. See [workflow and evaluation](docs/workflow.md) for proxy routing, response checks, host self-reports, and real execution.
+Static tests cover catalog and reference integrity, fixture loading, evaluator regression, and installer safety. `doctor` checks resources. See [workflow and evaluation](docs/workflow.md) for proxy routing, response checks, host self-reports, and real execution.
 
 The execution fixture no longer injects `dev`. Historical results describe their original versions. Static checks do not prove model behavior or quality after simplification. Establishing benefit requires comparable with/without runs on the same model, tasks, and environment; external model use still needs authorization.
 
@@ -131,7 +132,6 @@ design/
     openai.yaml
   references/
     animation.md
-    anthropic-frontend-design-LICENSE.txt
     design-direction.md
     interaction.md
 verify/
@@ -159,22 +159,6 @@ reflect/
   SKILL.md
   agents/
     openai.yaml
-external-cli/
-  SKILL.md
-  agents/
-    openai.yaml
-  references/
-    claude-code.md
-    codex-cli.md
-    grok-build.md
-    kimi-code.md
-    opencode.md
-  scripts/
-    claude-code-status.sh
-    codex-cli-status.sh
-    grok-build-cli-status.sh
-    kimi-code-status.sh
-    opencode-status.sh
 templates/
   AGENTS.md
 install.sh
@@ -204,4 +188,4 @@ Resolve manually edited generated content instead of forcing a sync. Update mark
 
 ## License
 
-Original content is [MIT](LICENSE). `design/references/design-direction.md` is adapted from a pinned Apache-2.0 source; its [license](design/references/anthropic-frontend-design-LICENSE.txt) is distributed alongside it. Motion references preserve attribution to [Emil Kowalski's MIT-licensed skills](https://github.com/emilkowalski/skills).
+Original content is [MIT](LICENSE). Source acknowledgements, where applicable, appear in individual references.

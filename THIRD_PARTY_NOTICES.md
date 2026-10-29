@@ -4,7 +4,7 @@
 
 Source: https://github.com/bosshanz/my-coding-skills
 
-MIT license retained at `plugins/my-coding-skills/LICENSE`. All skill files are copied unchanged from the commit recorded in `sources.lock.json`. The bundled Anthropic design reference license remains at `plugins/my-coding-skills/skills/design/references/anthropic-frontend-design-LICENSE.txt`. See the upstream README for additional attribution.
+MIT license retained at `plugins/my-coding-skills/LICENSE`. All skill files are copied unchanged from the commit recorded in `sources.lock.json`. Source acknowledgements for adapted methods, where applicable, appear in individual skill references and the upstream README.
 
 ## Diagram Design
 
